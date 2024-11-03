@@ -1,0 +1,27 @@
+= Can I take your order
+
+A simple application that takes your order and verifies what you ordered
+
+== Requirements:
+
+* Java 17 or Above
+
+== Classes:
+
+* CanIHaveYourOrderApplication - the Spring Boot Main Application
+
+== Build:
+
+[source,shell]
+----
+mvn clean package -DskipTests
+----
+
+== Run:
+
+[source,shell]
+----
+export spring_ai_openai_apiKey=<your api key>
+java -jar target/CanIHaveYourOrder-0.0.1-SNAPSHOT.jar
+----
+
