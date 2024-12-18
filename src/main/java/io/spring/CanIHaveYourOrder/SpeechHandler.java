@@ -15,6 +15,12 @@ import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.ai.audio.transcription.AudioTranscriptionPrompt;
+import org.springframework.ai.audio.transcription.AudioTranscriptionResponse;
+import org.springframework.ai.openai.OpenAiAudioTranscriptionModel;
+import org.springframework.ai.openai.audio.speech.SpeechModel;
+import org.springframework.ai.openai.audio.speech.SpeechPrompt;
+import org.springframework.ai.openai.audio.speech.SpeechResponse;
 import org.springframework.core.io.FileSystemResource;
 
 /**
@@ -24,6 +30,14 @@ public class SpeechHandler {
     private static final Logger log = LoggerFactory.getLogger(SpeechHandler.class);
 
     private static final AudioFormat audioFormat = new AudioFormat(16000, 16, 1, true, true);
+
+    private final OpenAiAudioTranscriptionModel transcriptionModel;
+    private final SpeechModel speechModel;
+
+    SpeechHandler(OpenAiAudioTranscriptionModel transcriptionModel, SpeechModel speechModel) {
+        this.transcriptionModel = transcriptionModel;
+        this.speechModel = speechModel;
+    }
 
     /**
      * Records audio via your laptops microphone and stores it to a file specified by the file name parameter.
@@ -74,6 +88,29 @@ public class SpeechHandler {
         System.out.println("Complete");
     }
 
+    /**
+     * Produced the text for the wav file that it was provided.
+     * @param wavAbsolutePath path to the wav file
+     * @return String containing the text from the wav file provided.
+     */
+    String speechToText(String wavAbsolutePath) {
+        AudioTranscriptionResponse response = transcriptionModel.call(new AudioTranscriptionPrompt(new FileSystemResource(wavAbsolutePath)));
+        String text = response.getResult().getOutput();
+        System.out.println(text);
+        return text;
+    }
+
+    /**
+     * Provides a mp3 file containing spoken word for the text provided.
+     * @param text the text to be transformed to speech
+     * @return mp3 file containing the spoken word contained in the text
+     */
+    byte[] textToSpeech(String text) {
+        SpeechPrompt speechPrompt = new SpeechPrompt(text);
+        SpeechResponse speechResponse = speechModel.call(speechPrompt);
+        return speechResponse.getResult().getOutput();
+    }
+
     private String storeMp3toFile(byte[] audioResponse) {
         FileSystemResource fileSystemResource = new FileSystemResource("response.mp3");
         try (OutputStream outputStream = fileSystemResource.getOutputStream()) {
@@ -85,5 +122,4 @@ public class SpeechHandler {
         }
         return fileSystemResource.getFile().getAbsolutePath();
     }
-
 }

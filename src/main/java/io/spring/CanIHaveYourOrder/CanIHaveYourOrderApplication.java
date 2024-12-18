@@ -28,7 +28,7 @@ public class CanIHaveYourOrderApplication {
                     System.in.read();
                     String wavAbsolutePath = speechHandler.recordAudio("recording.wav");
 
-                    String order = chatService.speechToText( wavAbsolutePath);
+                    String order = speechHandler.speechToText( wavAbsolutePath);
                     String response = respond(order, chatService);
                     respondViaVoice(response, speechHandler, chatService);
                     //TODO: stuff happens
@@ -55,6 +55,6 @@ public class CanIHaveYourOrderApplication {
     }
 
     void respondViaVoice(String response, SpeechHandler speechHandler, ChatService chatService) {
-        speechHandler.playResponse(chatService.textToSpeech(response));
+        speechHandler.playResponse(speechHandler.textToSpeech(response));
     }
 }
