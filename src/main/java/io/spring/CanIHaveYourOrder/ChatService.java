@@ -4,8 +4,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.ai.chat.client.advisor.QuestionAnswerAdvisor;
 import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.chat.model.ChatResponse;
+import org.springframework.ai.vectorstore.VectorStore;
 
 
 /**
@@ -21,9 +23,10 @@ public class ChatService {
         this.chatModel = chatModel;
     }
 
-    String promptToText(String prompt) {
+    String promptToText(String prompt, VectorStore vectorStore) {
         ChatClient chatClient = ChatClient.create(chatModel);
         ChatResponse chatResponse = chatClient.prompt()
+                .advisors(new QuestionAnswerAdvisor(vectorStore))
                 .user(prompt)
                 .call()
                 .chatResponse();

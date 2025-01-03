@@ -2,6 +2,7 @@ package io.spring.CanIHaveYourOrder;
 
 import javafx.application.Platform;
 
+import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -17,7 +18,8 @@ public class CanIHaveYourOrderApplication {
 
     @Bean
     ApplicationRunner applicationRunner(SpeechHandler speechHandler,
-                                        ChatService chatService) {
+                                        ChatService chatService,
+                                        VectorStore vectorStore) {
         return args -> {
             try {
                 Platform.startup(() ->
@@ -29,7 +31,7 @@ public class CanIHaveYourOrderApplication {
                     String wavAbsolutePath = speechHandler.recordAudio("recording.wav");
 
                     String order = speechHandler.speechToText( wavAbsolutePath);
-                    String response = respond(order, chatService);
+                    String response = respond(order, chatService, vectorStore);
                     respondViaVoice(response, speechHandler, chatService);
                     //TODO: stuff happens
                     //TODO: Send Event to order fullfillment using Pulsar-Binder
@@ -45,13 +47,13 @@ public class CanIHaveYourOrderApplication {
 
 
 
-    String respond(String order, ChatService chatService) {
-        chatService.promptToText("From the order given, extract the items from the following order in pretty print JSON format : \"" + order + "\"");
+    String respond(String order, ChatService chatService, VectorStore vectorStore) {
+        chatService.promptToText("From the order given, extract the items from the following order in pretty print JSON format : \"" + order + "\"", vectorStore);
 
         return chatService.promptToText("From the order given, extract the items from the following order and give " +
-                        "them a friendly curt acknowledgement confirming their order, In the voice of a nasally drive through " +
+                        "them a friendly curt acknowledgement confirming their order, in the voice of a nasally drive through " +
                         "employee at a fast food restaurant ask them if " +
-                        "this order is correct. If you don't understand please let them know. : \"" + order + "\"");
+                        "this order is correct. If an item the ordered isn't on the menu tell them so. If you don't understand please let them know. : \"" + order + "\"", vectorStore);
     }
 
     void respondViaVoice(String response, SpeechHandler speechHandler, ChatService chatService) {
