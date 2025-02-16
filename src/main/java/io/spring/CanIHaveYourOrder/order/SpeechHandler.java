@@ -1,4 +1,4 @@
-package io.spring.CanIHaveYourOrder;
+package io.spring.CanIHaveYourOrder.order;
 
 import javax.sound.sampled.AudioFileFormat;
 import javax.sound.sampled.AudioFormat;
@@ -34,7 +34,7 @@ public class SpeechHandler {
     private final OpenAiAudioTranscriptionModel transcriptionModel;
     private final SpeechModel speechModel;
 
-    SpeechHandler(OpenAiAudioTranscriptionModel transcriptionModel, SpeechModel speechModel) {
+    public SpeechHandler(OpenAiAudioTranscriptionModel transcriptionModel, SpeechModel speechModel) {
         this.transcriptionModel = transcriptionModel;
         this.speechModel = speechModel;
     }
@@ -47,7 +47,7 @@ public class SpeechHandler {
      * @throws LineUnavailableException
      * @throws IOException
      */
-    String recordAudio(String fileName) throws LineUnavailableException, IOException {
+   public  String recordAudio(String fileName) throws LineUnavailableException, IOException {
         File wavFile = new File(fileName);
         DataLine.Info info = new DataLine.Info(TargetDataLine.class, audioFormat);
         TargetDataLine line = (TargetDataLine) AudioSystem.getLine(info);
@@ -93,7 +93,7 @@ public class SpeechHandler {
      * @param wavAbsolutePath path to the wav file
      * @return String containing the text from the wav file provided.
      */
-    String speechToText(String wavAbsolutePath) {
+    public String speechToText(String wavAbsolutePath) {
         AudioTranscriptionResponse response = transcriptionModel.call(new AudioTranscriptionPrompt(new FileSystemResource(wavAbsolutePath)));
         String text = response.getResult().getOutput();
         System.out.println(text);
@@ -105,7 +105,7 @@ public class SpeechHandler {
      * @param text the text to be transformed to speech
      * @return mp3 file containing the spoken word contained in the text
      */
-    byte[] textToSpeech(String text) {
+    public byte[] textToSpeech(String text) {
         SpeechPrompt speechPrompt = new SpeechPrompt(text);
         SpeechResponse speechResponse = speechModel.call(speechPrompt);
         return speechResponse.getResult().getOutput();

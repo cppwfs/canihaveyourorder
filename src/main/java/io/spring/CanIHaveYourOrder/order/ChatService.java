@@ -1,4 +1,4 @@
-package io.spring.CanIHaveYourOrder;
+package io.spring.CanIHaveYourOrder.order;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,7 +21,7 @@ public class ChatService {
         this.chatModel = chatModel;
     }
 
-    String promptToText(String prompt) {
+    public String promptToText(String prompt) {
         ChatClient chatClient = ChatClient.create(chatModel);
         ChatResponse chatResponse = chatClient.prompt()
                 .user(prompt)

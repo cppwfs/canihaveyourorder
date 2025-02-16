@@ -1,4 +1,4 @@
-package io.spring.CanIHaveYourOrder;
+package io.spring.CanIHaveYourOrder.order;
 
 import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.openai.OpenAiAudioTranscriptionModel;

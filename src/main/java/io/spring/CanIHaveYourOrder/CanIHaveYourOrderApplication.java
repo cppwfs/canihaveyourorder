@@ -1,5 +1,7 @@
 package io.spring.CanIHaveYourOrder;
 
+import io.spring.CanIHaveYourOrder.order.ChatService;
+import io.spring.CanIHaveYourOrder.order.SpeechHandler;
 import javafx.application.Platform;
 
 import org.springframework.boot.ApplicationRunner;
