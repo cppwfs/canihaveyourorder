@@ -1,7 +1,7 @@
-package io.spring.CanIHaveYourOrder;
+package io.spring.canihaveyourorder;
 
-import io.spring.CanIHaveYourOrder.order.ChatService;
-import io.spring.CanIHaveYourOrder.order.SpeechHandler;
+import io.spring.canihaveyourorder.curbside.ChatService;
+import io.spring.canihaveyourorder.curbside.SpeechHandler;
 import javafx.application.Platform;
 
 import org.springframework.boot.ApplicationRunner;
@@ -32,7 +32,10 @@ public class CanIHaveYourOrderApplication {
 
                     String order = speechHandler.speechToText( wavAbsolutePath);
                     String response = respond(order, chatService);
-                    respondViaVoice(response, speechHandler, chatService);
+
+                    String responseTotal = respondWithTotal(order, chatService);
+                    respondViaVoice(response +"\n " + responseTotal, speechHandler, chatService);
+
                     //TODO: stuff happens
                     //TODO: Send Event to order fullfillment using Pulsar-Binder
                     //TODO: Order fish food and we have no fishfood
@@ -48,12 +51,18 @@ public class CanIHaveYourOrderApplication {
 
 
     String respond(String order, ChatService chatService) {
-        chatService.promptToText("From the order given, extract the items from the following order in pretty print JSON format : \"" + order + "\"");
-
-        return chatService.promptToText("From the order given, extract the items from the following order and give " +
-                        "them a friendly curt acknowledgement confirming their order, In the voice of a nasally drive through " +
-                        "employee at a fast food restaurant ask them if " +
+        return chatService.promptToText(" You are a drive through employee. From the order given, extract the items from the following order and give " +
+                        "them a friendly curt acknowledgement confirming their order,  " +
+                        "ask them if " +
                         "this order is correct. If you don't understand please let them know. : \"" + order + "\"");
+    }
+
+    String respondWithTotal(String order, ChatService chatService) {
+        String orderItems = chatService.promptToText("From the order given, extract the items from the following order in unformatted JSON in the smallest size possible with the following fields:itemName, size, and quantity:  \"" + order + "\"");
+        orderItems = orderItems.substring(8);
+        orderItems = orderItems.substring(0,orderItems.length()-4);
+
+        return chatService.promptForPrice("Get the total price from the string provided : \"" + orderItems + "\"");
     }
 
     void respondViaVoice(String response, SpeechHandler speechHandler, ChatService chatService) {

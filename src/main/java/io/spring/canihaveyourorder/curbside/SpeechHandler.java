@@ -1,4 +1,4 @@
-package io.spring.CanIHaveYourOrder.order;
+package io.spring.canihaveyourorder.curbside;
 
 import javax.sound.sampled.AudioFileFormat;
 import javax.sound.sampled.AudioFormat;

@@ -1,4 +1,4 @@
-package io.spring.CanIHaveYourOrder.order;
+package io.spring.canihaveyourorder.curbside;
 
 import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.openai.OpenAiAudioTranscriptionModel;

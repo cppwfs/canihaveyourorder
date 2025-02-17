@@ -1,5 +1,6 @@
-package io.spring.CanIHaveYourOrder.order;
+package io.spring.canihaveyourorder.curbside;
 
+import io.spring.canihaveyourorder.order.OrderPriceService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,8 +28,20 @@ public class ChatService {
                 .user(prompt)
                 .call()
                 .chatResponse();
-        String result =  chatResponse.getResult().getOutput().getContent();
+        String result =  chatResponse.getResult().getOutput().getText();
         log.info(result);
         return result;
     }
+    public String promptForPrice(String prompt) {
+        ChatClient chatClient = ChatClient.create(chatModel);
+        ChatResponse chatResponse = chatClient.prompt()
+                .user(prompt)
+                .tools(new OrderPriceService())
+                .call()
+                .chatResponse();
+        String result =  chatResponse.getResult().getOutput().getText();
+        log.info(result);
+        return result;
+    }
+
 }
