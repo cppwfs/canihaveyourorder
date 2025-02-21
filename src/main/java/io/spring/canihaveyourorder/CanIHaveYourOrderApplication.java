@@ -1,13 +1,21 @@
 package io.spring.canihaveyourorder;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.spring.canihaveyourorder.curbside.ChatService;
 import io.spring.canihaveyourorder.curbside.SpeechHandler;
+import io.spring.canihaveyourorder.fulfillment.Fulfillment;
+import io.spring.canihaveyourorder.order.Order;
+import io.spring.canihaveyourorder.order.OrderItem;
 import javafx.application.Platform;
 
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+
+import java.util.List;
 
 @SpringBootApplication
 public class CanIHaveYourOrderApplication {
@@ -19,7 +27,8 @@ public class CanIHaveYourOrderApplication {
 
     @Bean
     ApplicationRunner applicationRunner(SpeechHandler speechHandler,
-                                        ChatService chatService) {
+                                        ChatService chatService,
+                                        Fulfillment fulfillment) {
         return args -> {
             try {
                 Platform.startup(() ->
@@ -32,10 +41,11 @@ public class CanIHaveYourOrderApplication {
 
                     String order = speechHandler.speechToText( wavAbsolutePath);
                     String response = respond(order, chatService);
-
-                    String responseTotal = respondWithTotal(order, chatService);
+                    String orderJson = getOrderJson(order, chatService);
+                    String responseTotal = respondWithTotal(orderJson, chatService);
+                    Order orderObj = getOrder(orderJson, chatService);
+                    fulfillment.fulfill(orderObj);
                     respondViaVoice(response +"\n " + responseTotal, speechHandler, chatService);
-
                     //TODO: stuff happens
                     //TODO: Send Event to order fullfillment using Pulsar-Binder
                     //TODO: Order fish food and we have no fishfood
@@ -57,12 +67,29 @@ public class CanIHaveYourOrderApplication {
                         "this order is correct. If you don't understand please let them know. : \"" + order + "\"");
     }
 
-    String respondWithTotal(String order, ChatService chatService) {
+    String getOrderJson(String order, ChatService chatService) {
         String orderItems = chatService.promptToText("From the order given, extract the items from the following order in unformatted JSON in the smallest size possible with the following fields:itemName, size, and quantity:  \"" + order + "\"");
         orderItems = orderItems.substring(8);
         orderItems = orderItems.substring(0,orderItems.length()-4);
+        return orderItems;
+    }
+    Order getOrder(String orderJson, ChatService chatService) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        Order result = null;
+        try {
+            List<OrderItem> orderItemsVal = objectMapper.readValue(orderJson, new TypeReference<List<OrderItem>>() {
+            });
+            result = new Order(orderItemsVal);
+        }
+        catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
 
-        return chatService.promptForPrice("Get the total price from the string provided : \"" + orderItems + "\"");
+    String respondWithTotal(String orderJson, ChatService chatService) {
+        return chatService.promptForPrice("Get the total price from the string provided : \"" +
+                orderJson + "\"");
     }
 
     void respondViaVoice(String response, SpeechHandler speechHandler, ChatService chatService) {
