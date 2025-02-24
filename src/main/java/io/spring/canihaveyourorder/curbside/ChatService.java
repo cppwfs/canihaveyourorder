@@ -1,11 +1,5 @@
 package io.spring.canihaveyourorder.curbside;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import io.spring.canihaveyourorder.order.Order;
-import io.spring.canihaveyourorder.order.OrderItem;
-import io.spring.canihaveyourorder.order.OrderPriceService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,9 +10,6 @@ import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.ai.rag.retrieval.search.VectorStoreDocumentRetriever;
 import org.springframework.ai.vectorstore.VectorStore;
-
-import java.util.List;
-
 
 /**
  * Provides chat responses based on the prompts provided.
@@ -57,7 +48,6 @@ public class ChatService {
         ChatClient chatClient = ChatClient.create(chatModel);
         ChatResponse chatResponse = chatClient.prompt()
                 .user(prompt)
-                .tools(new OrderPriceService())
                 .call()
                 .chatResponse();
         String result =  chatResponse.getResult().getOutput().getText();
@@ -77,20 +67,6 @@ public class ChatService {
         orderItems = orderItems.substring(8);
         orderItems = orderItems.substring(0,orderItems.length()-4);
         return orderItems;
-    }
-
-    public Order getOrder(String orderJson, ChatService chatService) {
-        ObjectMapper objectMapper = new ObjectMapper();
-        Order result = null;
-        try {
-            List<OrderItem> orderItemsVal = objectMapper.readValue(orderJson, new TypeReference<List<OrderItem>>() {
-            });
-            result = new Order(orderItemsVal);
-        }
-        catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
-        return result;
     }
 
     public String respondWithTotal(String orderJson, ChatService chatService) {
