@@ -5,7 +5,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.openai.OpenAiAudioTranscriptionModel;
 import org.springframework.ai.openai.audio.speech.SpeechModel;
-import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -23,8 +22,8 @@ public class CanIHaveYourOrderConfiguration {
     }
 
     @Bean
-    ChatService chatService(ChatModel chatModel, VectorStore vectorStore) {
-        return new ChatService(chatModel, vectorStore);
+    ChatService chatService(ChatModel chatModel) {
+        return new ChatService(chatModel);
     }
 
     @Bean

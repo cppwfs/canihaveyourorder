@@ -2,8 +2,6 @@ package io.spring.canihaveyourorder;
 
 import io.spring.canihaveyourorder.curbside.ChatService;
 import io.spring.canihaveyourorder.curbside.SpeechHandler;
-import io.spring.canihaveyourorder.fulfillment.Fulfillment;
-import io.spring.canihaveyourorder.order.Order;
 import javafx.application.Platform;
 
 import org.springframework.boot.ApplicationRunner;
@@ -24,8 +22,7 @@ public class CanIHaveYourOrderApplication {
 
     @Bean
     ApplicationRunner applicationRunner(SpeechHandler speechHandler,
-                                        ChatService chatService,
-                                        Fulfillment fulfillment) {
+                                        ChatService chatService) {
         return args -> {
             Platform.startup(() ->
             {
@@ -39,17 +36,17 @@ public class CanIHaveYourOrderApplication {
 
                 if (input == 'd') {
                     String order = "I want dogfood, catfood, and fish Food.";
-                    takeOrder(speechHandler, chatService, fulfillment, order);
+                    takeOrder(speechHandler, chatService, order);
                 }
                 else {
-                    takeOrder(speechHandler, chatService, fulfillment, null);
+                    takeOrder(speechHandler, chatService, null);
                 }
             }
 
         };
     }
 
-    public void takeOrder(SpeechHandler speechHandler, ChatService chatService, Fulfillment fulfillment, String order) {
+    public void takeOrder(SpeechHandler speechHandler, ChatService chatService, String order) {
         String wavAbsolutePath = null;
         try {
             // Capture Order if one not provided
@@ -59,16 +56,11 @@ public class CanIHaveYourOrderApplication {
             }
             // Verify the order for customer
             String response = chatService.respond(order, chatService);
-            // Retrieve items from order and generate price response
-            String orderJson = chatService.getOrderJson(order, chatService);
-            String responseTotal = chatService.respondWithTotal(orderJson, chatService);
-            // Send Order to order fulfillment
-            Order orderObj = chatService.getOrder(orderJson, chatService);
-            fulfillment.fulfill(orderObj);
-            // Confirm the order and give the price of the order.
-            response = response + "\n " + responseTotal;
             System.out.println(response);
-            speechHandler.respondViaVoice(response, speechHandler, chatService);
+            speechHandler.respondViaVoice(response, speechHandler);
+            // TODO Retrieve items from order and generate price response
+            // TODO Confirm the order and give the price of the order.
+            // TODO Send order to fulfillment
         } catch (LineUnavailableException | IOException e) {
             throw new RuntimeException(e);
         }
