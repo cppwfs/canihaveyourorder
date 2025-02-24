@@ -5,8 +5,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.ai.chat.client.advisor.RetrievalAugmentationAdvisor;
+import org.springframework.ai.chat.client.advisor.api.Advisor;
 import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.chat.model.ChatResponse;
+import org.springframework.ai.rag.retrieval.search.VectorStoreDocumentRetriever;
+import org.springframework.ai.vectorstore.VectorStore;
 
 
 /**
@@ -18,13 +22,23 @@ public class ChatService {
 
     private final ChatModel chatModel;
 
-    ChatService(ChatModel chatModel) {
+    private VectorStore vectorStore;
+
+    ChatService(ChatModel chatModel, VectorStore vectorStore) {
         this.chatModel = chatModel;
+        this.vectorStore = vectorStore;
     }
 
     public String promptToText(String prompt) {
+        Advisor retrievalAugmentationAdvisor = RetrievalAugmentationAdvisor.builder()
+                .documentRetriever(VectorStoreDocumentRetriever.builder()
+                        .similarityThreshold(0.50)
+                        .vectorStore(vectorStore)
+                        .build())
+                .build();
         ChatClient chatClient = ChatClient.create(chatModel);
         ChatResponse chatResponse = chatClient.prompt()
+                .advisors(retrievalAugmentationAdvisor)
                 .user(prompt)
                 .call()
                 .chatResponse();

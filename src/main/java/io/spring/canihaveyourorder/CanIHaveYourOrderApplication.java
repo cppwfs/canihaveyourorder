@@ -58,13 +58,11 @@ public class CanIHaveYourOrderApplication {
         };
     }
 
-
-
     String respond(String order, ChatService chatService) {
         return chatService.promptToText(" You are a drive through employee. From the order given, extract the items from the following order and give " +
                         "them a friendly curt acknowledgement confirming their order,  " +
                         "ask them if " +
-                        "this order is correct. If you don't understand please let them know. : \"" + order + "\"");
+                        "this order is correct. Also verify that the items ordered are on the menu, do not mention that it is not on the menu unless they order something that is not on the menu, only if they are not.   If you don't understand please let them know. : \"" + order + "\"");
     }
 
     String getOrderJson(String order, ChatService chatService) {
