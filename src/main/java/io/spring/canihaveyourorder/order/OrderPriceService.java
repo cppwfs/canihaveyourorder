@@ -8,21 +8,18 @@ import org.springframework.ai.tool.annotation.Tool;
 import java.util.List;
 
 public class OrderPriceService {
+
+    private static final double PRICE_MULTIPLIER = 2.0;
+    private final ObjectMapper objectMapper = new ObjectMapper();
+
     @Tool(description = "Get the total price from the string provided")
     Double priceOrder(String orderItems) throws JsonProcessingException {
-        ObjectMapper objectMapper = new ObjectMapper();
-        double result = 0.0;
-        try {
-            List<OrderItem> orderItemsVal = objectMapper.readValue(orderItems, new TypeReference<List<OrderItem>>() {
-            });
+        List<OrderItem> orderItemsVal = objectMapper.readValue(orderItems, new TypeReference<>() {
+        });
 
-            for (OrderItem item : orderItemsVal) {
-                result += item.quantity() * 2.0;
-            }
-        }
-        catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
-        return result;
+        // Calculate total price using streams
+        return orderItemsVal.stream()
+                .mapToDouble(item -> item.quantity() * PRICE_MULTIPLIER)
+                .sum();
     }
 }

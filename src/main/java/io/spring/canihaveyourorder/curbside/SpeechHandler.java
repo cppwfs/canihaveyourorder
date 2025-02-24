@@ -60,7 +60,7 @@ public class SpeechHandler {
             try (AudioInputStream audioStream = new AudioInputStream(line)) {
                 AudioSystem.write(audioStream, AudioFileFormat.Type.WAVE, wavFile);
             } catch (IOException e) {
-                e.printStackTrace();
+                throw new RuntimeException(e);
             }
         });
         recordingThread.start();
@@ -69,7 +69,7 @@ public class SpeechHandler {
         line.stop();
         line.close();
         String wavAbsolutePath = wavFile.getAbsolutePath();
-        log.info("Recording saved as " + wavAbsolutePath);
+       log.debug("Recording saved as {}", wavAbsolutePath);
 
         return wavAbsolutePath;
     }
@@ -85,7 +85,7 @@ public class SpeechHandler {
 
         mediaPlayer.play();
 
-        System.out.println("Complete");
+        log.info("Complete");
     }
 
     /**
@@ -96,7 +96,7 @@ public class SpeechHandler {
     public String speechToText(String wavAbsolutePath) {
         AudioTranscriptionResponse response = transcriptionModel.call(new AudioTranscriptionPrompt(new FileSystemResource(wavAbsolutePath)));
         String text = response.getResult().getOutput();
-        System.out.println(text);
+        log.info(text);
         return text;
     }
 
@@ -115,11 +115,15 @@ public class SpeechHandler {
         FileSystemResource fileSystemResource = new FileSystemResource("response.mp3");
         try (OutputStream outputStream = fileSystemResource.getOutputStream()) {
             outputStream.write(audioResponse);
-            System.out.println("Data has been written to " + fileSystemResource.getFile().getAbsolutePath());
+            log.debug("Data has been written to {}", fileSystemResource.getFile().getAbsolutePath());
         } catch (IOException e) {
             System.err.println("Error writing to file: " + e.getMessage());
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
         return fileSystemResource.getFile().getAbsolutePath();
+    }
+
+    public void respondViaVoice(String response, SpeechHandler speechHandler, ChatService chatService) {
+        playResponse(speechHandler.textToSpeech(response));
     }
 }

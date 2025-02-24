@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Configuration;
 public class FulfillmentConfiguration {
 
     @Bean
-    Fulfillment fullfillment(StreamBridge streamBridge) {
+    Fulfillment fulfillment(StreamBridge streamBridge) {
         return new Fulfillment(streamBridge);
     }
 }
