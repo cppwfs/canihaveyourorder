@@ -1,13 +1,9 @@
 package io.spring.canihaveyourorder;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.spring.canihaveyourorder.curbside.ChatService;
 import io.spring.canihaveyourorder.curbside.SpeechHandler;
 import io.spring.canihaveyourorder.fulfillment.Fulfillment;
 import io.spring.canihaveyourorder.order.Order;
-import io.spring.canihaveyourorder.order.OrderItem;
 import javafx.application.Platform;
 
 import org.springframework.boot.ApplicationRunner;
@@ -17,7 +13,6 @@ import org.springframework.context.annotation.Bean;
 
 import javax.sound.sampled.LineUnavailableException;
 import java.io.IOException;
-import java.util.List;
 
 @SpringBootApplication
 public class CanIHaveYourOrderApplication {
