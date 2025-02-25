@@ -33,10 +33,10 @@ public class CanIHaveYourOrderApplication {
                 if (input == 'q') {
                     System.exit(0);
                 }
-
                 if (input == 'd') {
                     String order = "I want dogfood, catfood, and fish Food.";
                     takeOrder(speechHandler, chatService, order);
+                    System.in.read();
                 }
                 else {
                     takeOrder(speechHandler, chatService, null);
