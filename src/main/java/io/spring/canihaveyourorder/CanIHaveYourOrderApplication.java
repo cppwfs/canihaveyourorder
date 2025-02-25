@@ -40,6 +40,7 @@ public class CanIHaveYourOrderApplication {
                 if (input == 'd') {
                     String order = "I want dogfood, catfood, and fish Food.";
                     takeOrder(speechHandler, chatService, fulfillment, order);
+                    System.in.read();
                 }
                 else {
                     takeOrder(speechHandler, chatService, fulfillment, null);
