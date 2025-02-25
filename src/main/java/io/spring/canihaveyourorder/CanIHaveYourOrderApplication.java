@@ -32,19 +32,31 @@ public class CanIHaveYourOrderApplication {
             });
             while (true) {
                 System.out.println("Press <Enter> to start Order");
-                System.in.read();
-                takeOrder(speechHandler, chatService, fulfillment);
+                int input = System.in.read();
+                if (input == 'q') {
+                    System.exit(0);
+                }
+
+                if (input == 'd') {
+                    String order = "I want dogfood, catfood, and fish Food.";
+                    takeOrder(speechHandler, chatService, fulfillment, order);
+                }
+                else {
+                    takeOrder(speechHandler, chatService, fulfillment, null);
+                }
             }
 
         };
     }
 
-    public void takeOrder(SpeechHandler speechHandler, ChatService chatService, Fulfillment fulfillment) {
+    public void takeOrder(SpeechHandler speechHandler, ChatService chatService, Fulfillment fulfillment, String order) {
         String wavAbsolutePath = null;
         try {
-            // Capture Order
-            wavAbsolutePath = speechHandler.recordAudio("recording.wav");
-            String order = speechHandler.speechToText(wavAbsolutePath);
+            // Capture Order if one not provided
+            if (order == null) {
+                wavAbsolutePath = speechHandler.recordAudio("recording.wav");
+                order = speechHandler.speechToText(wavAbsolutePath);
+            }
             // Verify the order for customer
             String response = chatService.respond(order, chatService);
             // Retrieve items from order and generate price response
@@ -54,7 +66,9 @@ public class CanIHaveYourOrderApplication {
             Order orderObj = chatService.getOrder(orderJson, chatService);
             fulfillment.fulfill(orderObj);
             // Confirm the order and give the price of the order.
-            speechHandler.respondViaVoice(response + "\n " + responseTotal, speechHandler, chatService);
+            response = response + "\n " + responseTotal;
+            System.out.println(response);
+            speechHandler.respondViaVoice(response, speechHandler, chatService);
         } catch (LineUnavailableException | IOException e) {
             throw new RuntimeException(e);
         }
