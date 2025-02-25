@@ -17,4 +17,11 @@ public class Order {
     public void setOrderItems(List<OrderItem> orderItems) {
         this.orderItems = new ArrayList<OrderItem>(orderItems);
     }
+
+    @Override
+    public String toString() {
+        return "Order{" +
+                "orderItems=" + orderItems +
+                '}';
+    }
 }
