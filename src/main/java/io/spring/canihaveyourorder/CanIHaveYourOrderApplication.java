@@ -55,9 +55,9 @@ public class CanIHaveYourOrderApplication {
                 order = speechHandler.speechToText(wavAbsolutePath);
             }
             // Verify the order for customer
-            String response = chatService.respond(order, chatService);
+            String response = chatService.respond(order);
             System.out.println(response);
-            speechHandler.respondViaVoice(response, speechHandler);
+            speechHandler.respondViaVoice(response);
             // TODO Retrieve items from order and generate price response
             // TODO Confirm the order and give the price of the order.
             // TODO Send order to fulfillment

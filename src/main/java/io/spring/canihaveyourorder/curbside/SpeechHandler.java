@@ -123,7 +123,7 @@ public class SpeechHandler {
         return fileSystemResource.getFile().getAbsolutePath();
     }
 
-    public void respondViaVoice(String response, SpeechHandler speechHandler) {
-        playResponse(speechHandler.textToSpeech(response));
+    public void respondViaVoice(String response) {
+        playResponse(textToSpeech(response));
     }
 }
