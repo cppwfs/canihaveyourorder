@@ -46,13 +46,11 @@ public class CanIHaveYourOrderApplication {
         };
     }
 
-    public void takeOrder(SpeechHandler speechHandler, ChatService chatService, String order) {
-        String wavAbsolutePath = null;
+    public void takeOrder(SpeechHandler speechHandler, ChatService chatService, String order) throws Exception {
         try {
             // Capture Order if one not provided
             if (order == null) {
-                wavAbsolutePath = speechHandler.recordAudio("recording.wav");
-                order = speechHandler.speechToText(wavAbsolutePath);
+                order = speechHandler.recordOrder();
             }
             // Verify the order for customer
             String response = chatService.respond(order);
