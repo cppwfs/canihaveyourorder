@@ -35,18 +35,18 @@ public class CanIHaveYourOrderApplication {
         };
     }
 
-    public void takeOrder(SpeechHandler speechHandler, ChatService chatService) {
+    public void takeOrder(SpeechHandler speechHandler, ChatService chatService) throws Exception{
         String wavAbsolutePath = null;
         try {
             // Capture Order
-            wavAbsolutePath = speechHandler.recordAudio("recording.wav");
-            String order = speechHandler.speechToText(wavAbsolutePath);
+            String order = speechHandler.recordOrder();
             // Verify the order for customer
             String response = chatService.respond(order, chatService);
+            System.out.println(response);
             // Retrieve items from order and generate price response
             // Send Order to order fulfillment
             // Confirm the order and give the price of the order.
-            speechHandler.respondViaVoice(response,  speechHandler);
+            speechHandler.respondViaVoice(response);
         } catch (LineUnavailableException | IOException e) {
             throw new RuntimeException(e);
         }
