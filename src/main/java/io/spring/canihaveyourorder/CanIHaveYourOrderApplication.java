@@ -50,13 +50,13 @@ public class CanIHaveYourOrderApplication {
         };
     }
 
-    public void takeOrder(SpeechHandler speechHandler, ChatService chatService, Fulfillment fulfillment, String order) {
+    public void takeOrder(SpeechHandler speechHandler, ChatService chatService,
+                          Fulfillment fulfillment, String order) throws Exception{
         String wavAbsolutePath = null;
         try {
             // Capture Order if one not provided
             if (order == null) {
-                wavAbsolutePath = speechHandler.recordAudio("recording.wav");
-                order = speechHandler.speechToText(wavAbsolutePath);
+                order = speechHandler.recordOrder();
             }
             // Verify the order for customer
             String response = chatService.respond(order, chatService);
@@ -69,7 +69,7 @@ public class CanIHaveYourOrderApplication {
             // Confirm the order and give the price of the order.
             response = response + "\n " + responseTotal;
             System.out.println(response);
-            speechHandler.respondViaVoice(response, speechHandler, chatService);
+            speechHandler.respondViaVoice(response);
         } catch (LineUnavailableException | IOException e) {
             throw new RuntimeException(e);
         }
