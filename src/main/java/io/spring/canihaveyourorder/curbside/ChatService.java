@@ -21,6 +21,12 @@ public class ChatService {
     ChatService(ChatModel chatModel) {
         this.chatModel = chatModel;
     }
+    public String respond(String order) {
+        return promptToText(" You are a drive through employee. From the order given, extract the items from the following order and give " +
+                "them a friendly curt acknowledgement confirming their order,  " +
+                "ask them if " +
+                "this order is correct. If you don't understand please let them know. : \"" + order + "\"");
+    }
 
     public String promptToText(String prompt) {
         ChatClient chatClient = ChatClient.create(chatModel);
@@ -43,10 +49,4 @@ public class ChatService {
         return result;
     }
 
-    public String respond(String order) {
-        return promptToText(" You are a drive through employee. From the order given, extract the items from the following order and give " +
-                "them a friendly curt acknowledgement confirming their order,  " +
-                "ask them if " +
-                "this order is correct. If you don't understand please let them know. : \"" + order + "\"");
-    }
 }
