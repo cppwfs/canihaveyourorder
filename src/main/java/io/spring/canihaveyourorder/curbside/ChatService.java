@@ -65,21 +65,21 @@ public class ChatService {
         return result;
     }
 
-    public String respond(String order, ChatService chatService) {
-        return chatService.promptToText(" You are a drive through employee. From the order given, extract the items from the following order and give " +
+    public String respond(String order) {
+        return promptToText(" You are a drive through employee. From the order given, extract the items from the following order and give " +
                 "them a friendly curt acknowledgement confirming their order,  " +
                 "ask them if " +
                 "this order is correct. Also verify that the items ordered are on the menu, do not mention that it is not on the menu unless they order something that is not on the menu, only if they are not.   If you don't understand please let them know. : \"" + order + "\"");
     }
 
-    public String getOrderJson(String order, ChatService chatService) {
-        String orderItems = chatService.promptToText("From the order given, extract the items from the following order in unformatted JSON in the smallest size possible with the following fields:itemName, size, and quantity:  \"" + order + "\"");
+    public String getOrderJson(String order) {
+        String orderItems = promptToText("From the order given, extract the items from the following order in unformatted JSON in the smallest size possible with the following fields:itemName, size, and quantity:  \"" + order + "\"");
         orderItems = orderItems.substring(8);
         orderItems = orderItems.substring(0,orderItems.length()-4);
         return orderItems;
     }
 
-    public Order getOrder(String orderJson, ChatService chatService) {
+    public Order getOrder(String orderJson) {
         ObjectMapper objectMapper = new ObjectMapper();
         Order result = null;
         try {
@@ -93,8 +93,8 @@ public class ChatService {
         return result;
     }
 
-    public String respondWithTotal(String orderJson, ChatService chatService) {
-        return chatService.promptForPrice("Get the total price from the string provided : \"" +
+    public String respondWithTotal(String orderJson) {
+        return promptForPrice("Get the total price from the string provided : \"" +
                 orderJson + "\"");
     }
 }

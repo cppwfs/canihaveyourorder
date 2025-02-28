@@ -76,12 +76,23 @@ public class SpeechHandler {
      * Accepts the audio stored in mp3 format as a byte array and plays the sound via your machine's speakers.
      * @param audioResponse mp3 content as a byte array.
      */
-    public void playResponse(byte[] audioResponse)  {
+    public void playResponse(byte[] audioResponse) {
         String mp3FilePath = storeMp3toFile(audioResponse);
         Media media = new Media(new File(mp3FilePath).toURI().toString());
         MediaPlayer mediaPlayer = new MediaPlayer(media);
+        final boolean[] pause = new boolean[1];
+        pause[0] = false;
+        mediaPlayer.setOnEndOfMedia(() -> {
+            pause[0] = true;
+        });
         mediaPlayer.play();
-
+        try {
+            while (!pause[0]) {
+                Thread.sleep(500);
+            }
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
         log.info("Complete");
     }
 
