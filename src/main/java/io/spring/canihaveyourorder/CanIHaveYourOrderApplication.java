@@ -58,17 +58,19 @@ public class CanIHaveYourOrderApplication {
                 order = speechHandler.recordOrder();
             }
             // Verify the order for customer
-            String response = chatService.respond(order, chatService);
+            String response = chatService.respond(order);
             // Retrieve items from order and generate price response
-            String orderJson = chatService.getOrderJson(order, chatService);
-            String responseTotal = chatService.respondWithTotal(orderJson, chatService);
-            // Send Order to order fulfillment
-            Order orderObj = chatService.getOrder(orderJson, chatService);
-            fulfillment.fulfill(orderObj);
+            String orderJson = chatService.getOrderJson(order);
+            String responseTotal = chatService.respondWithTotal(orderJson);
+
             // Confirm the order and give the price of the order.
             response = response + "\n " + responseTotal;
             System.out.println(response);
             speechHandler.respondViaVoice(response);
+
+            // Send Order to order fulfillment
+            Order orderObj = chatService.getOrder(orderJson);
+            fulfillment.fulfill(orderObj);
         } catch (LineUnavailableException | IOException e) {
             throw new RuntimeException(e);
         }
