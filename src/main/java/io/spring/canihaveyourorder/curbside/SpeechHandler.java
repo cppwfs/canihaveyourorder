@@ -80,7 +80,19 @@ public class SpeechHandler {
         String mp3FilePath = storeMp3toFile(audioResponse);
         Media media = new Media(new File(mp3FilePath).toURI().toString());
         MediaPlayer mediaPlayer = new MediaPlayer(media);
+        final boolean[] pause = new boolean[1];
+        pause[0] = false;
+        mediaPlayer.setOnEndOfMedia(() -> {
+            pause[0] = true;
+        });
         mediaPlayer.play();
+        try {
+            while (!pause[0]) {
+                Thread.sleep(500);
+            }
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
 
         log.info("Complete");
     }
