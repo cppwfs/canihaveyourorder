@@ -25,3 +25,16 @@ export spring_ai_openai_apiKey=<your api key>
 java -jar target/CanIHaveYourOrder-0.0.1-SNAPSHOT.jar
 ----
 
+== Run:
+
+* This project uses OpenAI you need to have the `SPRING_AI_OPENAI_API_KEY` set.
+* Properties prefixed with `spring_datasource_` are the datasource settings for the vector database.
+
+[source,shell]
+----
+export SPRING_AI_OPENAI_API_KEY=<yourkey>
+
+export spring_datasource_url=jdbc:postgresql://localhost:5432/sbdocs
+export spring_datasource_username=admin
+export spring_datasource_password=password
+export spring_datasource_driverClassName=org.postgresql.Driver
