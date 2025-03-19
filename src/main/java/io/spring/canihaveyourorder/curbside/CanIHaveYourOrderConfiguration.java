@@ -31,4 +31,5 @@ public class CanIHaveYourOrderConfiguration {
     Consumer<String> myConsumer() {
         return logger::info;
     }
+
 }

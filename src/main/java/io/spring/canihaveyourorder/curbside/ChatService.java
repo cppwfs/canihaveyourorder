@@ -31,7 +31,7 @@ public class ChatService {
 
     private VectorStore vectorStore;
 
-    ChatService(ChatModel chatModel, VectorStore vectorStore) {
+    public ChatService(ChatModel chatModel, VectorStore vectorStore) {
         this.chatModel = chatModel;
         this.vectorStore = vectorStore;
     }
