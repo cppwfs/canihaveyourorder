@@ -70,7 +70,7 @@ class CanIHaveYourOrderApplicationTests {
 
 		String result = chatService.promptToText(orderPrompt);
 		String validationResponse = getValidateResponse(
-				"Answer yes or no if for this order : \"" + order + "\" is the following quote a good response to give the user: \"" + result + "\" and the only items customer are allowed to order are dog food, cat food, and fish food. ");
+				"Here is a statement to evaluate: \""+result+"\".   Reply yes or no, if statement does not contain items that are the menu then the correct response you must respond no.   If the statement contains items only on the menu the answer is yes.  The menu is the following items:Dog Food, Cat Food, Fish Food.");
 		assertThat(validationResponse.toLowerCase()).contains("yes");
 		validationResponse = getValidateResponse("Explain your answer");
 		logger.info(validationResponse);
