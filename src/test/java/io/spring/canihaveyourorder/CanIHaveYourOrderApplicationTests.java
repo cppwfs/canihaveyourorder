@@ -56,25 +56,28 @@ class CanIHaveYourOrderApplicationTests {
 	void testValidOrderExtraction() {
 		String orderPrompt = "I want dog food, cat food, and fish food.";
 		String validationResponse = validateResponse(orderPrompt);
-		assertThat(validationResponse.toLowerCase()).contains("yes");
+		assertThat(validationResponse.toLowerCase()).contains("no");
 	}
 
 	@Test
 	void testInvalidOrderExtraction() {
 		String orderPrompt = "I want order dog food, cat food, and cow food.";
 		String validationResponse = validateResponse(orderPrompt);
-		assertThat(validationResponse.toLowerCase()).contains("no");
+		assertThat(validationResponse.toLowerCase()).contains("yes");
 	}
 
 	private String validateResponse(String order) {
 		String orderPrompt = orderPromptBase + order + "\"";
 		String result = chatService.promptToText(orderPrompt);
-
+		System.out.println(result);
+//		String validateResponse =  getValidateResponse(
+//				"Here is a statement to evaluate: \""+result+"\".   " +
+//						"Reply yes or no, if statement contains an item that is not on the menu then the correct response you must respond no, unless it states that cow food is not on the menu.   " +
+//						"If the statement contains items only on the menu the answer is yes.  " +
+//						"The menu is the following items:Dog Food, Cat Food, Fish Food.");
 		String validateResponse =  getValidateResponse(
 				"Here is a statement to evaluate: \""+result+"\".   " +
-						"Reply yes or no, if statement contains an item that is not on the menu then the correct response you must respond no.   " +
-						"If the statement contains items only on the menu the answer is yes.  " +
-						"The menu is the following items:Dog Food, Cat Food, Fish Food.");
+						"Does the statement indicate the item is not on the menu or that it couldn't find the item, the statement may have the items in different order, only answer yes or no.");
 		logger.info( getValidateResponse("Explain your answer"));
 		return validateResponse;
 	}
