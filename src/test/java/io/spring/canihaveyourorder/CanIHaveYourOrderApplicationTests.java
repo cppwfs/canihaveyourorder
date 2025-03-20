@@ -54,26 +54,29 @@ class CanIHaveYourOrderApplicationTests {
 
 	@Test
 	void testValidOrderExtraction() {
-		String order = "I want dogfood, cat food, and fish Food.";
-		String orderPrompt = orderPromptBase + order + "\"";
-		String result = chatService.promptToText(orderPrompt);
-		String validationResponse = getValidateResponse("Answer yes or no if for this order : \"" + order + "\" is the following response is valid: \"" + result + "\" if the only valid items to order are dog food, cat food, and fish food");
+		String orderPrompt = "I want dog food, cat food, and fish food.";
+		String validationResponse = validateResponse(orderPrompt);
 		assertThat(validationResponse.toLowerCase()).contains("yes");
-		validationResponse = getValidateResponse("Explain your answer");
-		logger.info(validationResponse);
 	}
 
 	@Test
-	void testinValidOrderExtraction() {
-		String order = "I want dogfood, cat food, and a car.";
-		String orderPrompt = orderPromptBase + order + "\"";
+	void testInvalidOrderExtraction() {
+		String orderPrompt = "I want order dog food, cat food, and cow food.";
+		String validationResponse = validateResponse(orderPrompt);
+		assertThat(validationResponse.toLowerCase()).contains("no");
+	}
 
+	private String validateResponse(String order) {
+		String orderPrompt = orderPromptBase + order + "\"";
 		String result = chatService.promptToText(orderPrompt);
-		String validationResponse = getValidateResponse(
-				"Here is a statement to evaluate: \""+result+"\".   Reply yes or no, if statement does not contain items that are the menu then the correct response you must respond no.   If the statement contains items only on the menu the answer is yes.  The menu is the following items:Dog Food, Cat Food, Fish Food.");
-		assertThat(validationResponse.toLowerCase()).contains("yes");
-		validationResponse = getValidateResponse("Explain your answer");
-		logger.info(validationResponse);
+
+		String validateResponse =  getValidateResponse(
+				"Here is a statement to evaluate: \""+result+"\".   " +
+						"Reply yes or no, if statement contains an item that is not on the menu then the correct response you must respond no.   " +
+						"If the statement contains items only on the menu the answer is yes.  " +
+						"The menu is the following items:Dog Food, Cat Food, Fish Food.");
+		logger.info( getValidateResponse("Explain your answer"));
+		return validateResponse;
 	}
 
 	private String getValidateResponse(String prompt) {
