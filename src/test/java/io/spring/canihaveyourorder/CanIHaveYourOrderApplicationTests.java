@@ -54,14 +54,14 @@ class CanIHaveYourOrderApplicationTests {
 
 	@Test
 	void testValidOrderExtraction() {
-		String orderPrompt = "I want dog food, cat food, and fish food.";
+		String orderPrompt = "I want Dog Food, Cat Food, and Fish Food.";
 		String validationResponse = validateResponse(orderPrompt);
 		assertThat(validationResponse.toLowerCase()).contains("yes");
 	}
 
 	@Test
 	void testInvalidOrderExtraction() {
-		String orderPrompt = "I want order dog food, cat food, and cow food.";
+		String orderPrompt = "I want order Dog Food, Cat Food, and Cow Food.";
 		String validationResponse = validateResponse(orderPrompt);
 		assertThat(validationResponse.toLowerCase()).contains("no");
 	}
@@ -72,7 +72,7 @@ class CanIHaveYourOrderApplicationTests {
 
 		String validateResponse =  getValidateResponse(
 				"Here is a statement to evaluate: \""+result+"\".   " +
-						"Reply yes or no, if statement contains an item that is not on the menu then the correct response you must respond no, unless it states that cow food is not on the menu.   " +
+						"Reply yes or no, if statement contains an item that is not on the menu then the correct response you must respond no.   " +
 						"If the statement contains items only on the menu the answer is yes.  " +
 						"The menu is the following items:Dog Food, Cat Food, Fish Food.");
 		logger.info( getValidateResponse("Explain your answer"));
